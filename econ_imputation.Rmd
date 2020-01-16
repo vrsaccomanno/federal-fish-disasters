@@ -1,0 +1,207 @@
+---
+title: "fed_fish_disas_imputation"
+author: "Vienna Saccomanno"
+date: "12/27/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+#Attach packages
+
+library(ggplot2)
+library(readr)
+library(tidyverse)
+library(packHV)
+library(boot)
+library(naniar)
+library(simputation)
+
+```
+
+
+```{r}
+#Load data
+econ_raw <- read_csv("C:/Users/v.r.saccomanno/Desktop/econ_est_R_2.csv")
+View(econ_raw)
+
+```
+
+
+###1. Address missing data by 'management' subcategory
+```{r}
+#Explore missing data
+gg_miss_var(econ_raw, facet = management) 
+
+ggplot(econ_raw,
+       aes(x=management,
+           y=dollars))+
+  geom_miss_point()
+
+gg_miss_var(econ_raw)
+
+# Make a shadow matrix, then bind to original df
+as_shadow(econ_raw)
+na_shadow <- bind_shadow(econ_raw)
+
+#Imputation by median (using simputation pkg), and visualize: 
+econ_raw %>%
+  impute_median(dollar_diff_real ~ management) %>%
+  ggplot(aes(x=dollar_diff_real,
+           y=management)) + 
+  geom_point()
+
+# Show which ones are actually imputed with shadow matrix...
+na_shadow %>%
+impute_median(dollar_diff_real ~ management) %>%
+  ggplot(aes(x=dollar_diff_real,
+           y=management,
+             colour = dollar_diff_real_NA)) + 
+  geom_point()
+
+# Now we can see where the imputed values exist, wrt the actual complete cases.  
+econ_impute<- impute_median(na_shadow, dollar_diff_real ~ management)
+head(econ_impute, 15)
+View(econ_impute)
+
+```
+
+### 2. Data wrangling and exploration
+```{r}
+# Exploratory graph
+ggplot(econ_impute, aes(x = dollar_diff_real)) +
+  geom_histogram(bins = 5) +
+  theme_light()
+
+#Q-Q plots
+qqnorm(econ_impute$dollar_diff_real)
+#Curving off at the extremities = data have more extreme values that we'd expect if they truly came from a normal distribution
+
+#Test for normality
+shapiro.test(econ_impute$dollar_diff_real)
+#p-value = 4.785e-12 = statisticlly different from a normal distribution
+
+# Pull revenue change (real) as a vector
+econ_change <- econ_impute%>% 
+  pull(dollar_diff_real)
+summary(econ_change)
+# Min.          1st Qu.     Median       Mean    3rd Qu.       Max. 
+#-139911239     524045    3975456   34358712   18037557  300618829 
+sum(econ_change) #2,886,131,834
+```
+
+###3. Use the set.seed function to ensure all results, figures, etc are reproducible.
+```{r}
+set.seed(123)
+```
+
+
+###4. Create a function, do some bootstrapping:
+
+```{r}
+#### Create a function to calculate the MEAN of varying vectors (x) of index (i)
+mean_fun <- function (x,i) {mean(x[i])}
+
+# 10000 bootstrap samples: 
+boot_mean_10000 <- boot(econ_change, mean_fun, R = 10000)
+
+ggplot() +
+  aes(boot_mean_10000$t) + 
+  geom_histogram()
+
+# 100000 bootstrap samples:
+boot_mean_100000 <- boot(econ_change, mean_fun, R = 100000)
+
+ggplot() +
+  aes(boot_mean_100000$t) +
+  geom_histogram()
+
+boot_mean_100000$t0 # to report the mean of the original sample =$34,358,712
+boot_mean_100000 # to report bias, SE
+#Bias (difference between original sample mean and bootstrapped sampling mean)=-17,237.63
+#Std. error (SD of bootstrapped sampling distribution)=$8,780,000
+
+################
+#### Create a function to calculate the MEDIAN of varying vectors (x) of index (i)
+median_fun <- function (x,i) {median(x[i])}
+
+# 10000 bootstrap samples: 
+boot_med_10000 <- boot(econ_change, median_fun, R = 10000)
+
+ggplot() +
+  aes(boot_med_10000$t) + 
+  geom_histogram()
+
+# 100000 bootstrap samples:
+boot_med_100000 <- boot(econ_change, median_fun, R = 100000)
+
+ggplot() +
+  aes(boot_med_100000$t) +
+  geom_histogram()
+
+boot_med_100000$t0 # Median of the original sample =$5,660,068
+boot_med_100000 # to report bias, SE
+#Bias (difference between original sample median and bootstrapped sampling median)=$1,225,099
+#Std. error (SD of bootstrapped sampling distribution)= $3,390,030
+
+
+# 1000000 bootstrap samples:
+boot_med_1000000 <- boot(econ_change, median_fun, R = 1000000)
+boot_med_1000000 
+#Bias (difference between original sample median and bootstrapped sampling median)=$549,040.1
+#Std. error (SD of bootstrapped sampling distribution)= $3,217,758
+
+```
+
+
+###5. Find a bootstrapped confidence interval:
+
+```{r}
+#95% CI for mean statistic
+boot.ci(boot_mean_100000, conf = 0.95, type = 'basic') #'basic' = compute differences between each bootstrap replication and t0 and use percentiles of their distribution. 
+
+#Intervals : 
+#Level      Basic         
+#95%   (16,308,393, 50,687,425)  
+
+# Mean, direct revenue loss in a disaster year is $34,358,712 ($US2019) (n=76), with a boot strapped 95% confidence interval of [$17,704,773, $55,547,146] (n= 100,000 bootstrap samples).
+
+#######################
+
+#95% CI for median statistic, 100,000
+boot.ci(boot_med_100000, conf = 0.95, type = 'basic') #'basic' = compute differences between each bootstrap replication and t0 and use percentiles of their distribution. 
+
+#Intervals : 
+#Level      Basic         
+#95%   (-4,834,947,  6,204,245) 
+
+# Median, direct revenue loss in a disaster year is $5,660,068 ($US2019) (n=72), with a boot strapped 95% confidence interval of [-$2,157,907,  $9,633,001] (n= 100,000 bootstrap samples).
+  
+```
+
+
+###6. Other summary statistics
+
+```{r}
+#Assess the appropriation amount to revenue loss ratio
+appropiation_ratio <- econ_impute %>%
+  mutate(app_ratio = appropration_amt/dollar_diff_real)%>%
+  drop_na(app_ratio)
+
+count(appropiation_ratio, app_ratio >1)
+count(appropiation_ratio, app_ratio <0)
+#23 are greater than 1
+#31 are less than 1
+#16 are negative
+
+mean(appropiation_ratio$app_ratio)
+#52.09476
+median(appropiation_ratio$app_ratio)
+#0.4620938
+
+```
+
