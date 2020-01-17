@@ -1,0 +1,16 @@
+library(devtools)
+library(pillar)
+library(ggplot2)
+library(RColorBrewer)
+
+setwd("C:/Users/LYALL.BELLQUIST/Box/Climate Ready Fisheries/New Papers/Federal Fisheries Disasters - Extreme event normalization/Figures")
+
+Cause <- read.table("State-years_by_cause.txt", header = TRUE, sep = "\t")
+
+head(Cause) #just to double check data structure
+
+ggplot(Cause, aes(fill=Cause, y=StateYears, x=Year)) + 
+  geom_bar(position="stack", stat="identity") + 
+  scale_fill_brewer(palette="BuPu") +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"))
