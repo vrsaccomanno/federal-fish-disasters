@@ -1,0 +1,47 @@
+---
+title: "figures"
+author: "Vienna Saccomanno"
+date: "1/16/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r}
+library(tidyverse)
+library(readr)
+library(viridis)
+library(hrbrthemes)
+library(ggsci)
+
+```
+
+###Making bar charts on trends
+```{r}
+allo_cause <- read.delim("By Cause/Allocation_by_cause.txt")
+
+#Changing legend order
+levels(allo_cause$Cause)
+allo_cause$Cause<- factor(allo_cause$Cause, levels = c("Anthropogenic", "Environmental", "Combination of both"))
+
+
+#allocation by cause
+p0 <- ggplot(allo_cause, aes(fill= Cause, y=Allocation, x=Year))+
+  geom_bar(position = "stack", stat= "identity")+
+  scale_y_continuous(labels = scales::dollar)+
+  scale_x_continuous(breaks=seq(1995,2018,5))+
+  scale_fill_jama()+
+  theme_classic()
+
+p1 <- p0 + labs(x="Years",
+                Y= "Allocation",
+                subtitle= "1.a",
+                caption = "Source: NOAA")
+
+
+```
+
