@@ -2,11 +2,15 @@
 title: "figures"
 author: "Vienna Saccomanno"
 date: "1/16/2020"
-output: html_document
+output:
+  pdf_document: default
+  word_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+options(tinytex.verbose = TRUE)
 ```
 
 ## R Markdown
@@ -17,12 +21,13 @@ library(readr)
 library(viridis)
 library(hrbrthemes)
 library(ggsci)
-
+library(gridExtra)
 ```
 
 ###Making bar charts on trends
 ```{r}
 allo_cause <- read.delim("By Cause/Allocation_by_cause.txt")
+allo_region<- read.delim("By Region/Allocation_2019USD_1989-2019.txt")
 
 #Changing legend order
 levels(allo_cause$Cause)
@@ -30,18 +35,34 @@ allo_cause$Cause<- factor(allo_cause$Cause, levels = c("Anthropogenic", "Environ
 
 
 #allocation by cause
-p0 <- ggplot(allo_cause, aes(fill= Cause, y=Allocation, x=Year))+
+cause_p0 <- ggplot(allo_cause, aes(fill= Cause, y=Allocation, x=Year))+
   geom_bar(position = "stack", stat= "identity")+
   scale_y_continuous(labels = scales::dollar)+
   scale_x_continuous(breaks=seq(1995,2018,5))+
+  scale_fill_uchicago()+
+  theme_classic()
+
+cause_p1 <- cause_p0 + labs(x="",
+                Y= "Allocation",
+                subtitle= "1.a")
+cause_p1
+
+
+#allocation by region
+region_p0 <- ggplot(allo_region, aes(fill= Region, y=Allocation, x=Year))+
+  geom_bar(position = "stack", stat= "identity")+
+  scale_y_continuous(labels = scales::dollar)+
+  scale_x_continuous(breaks=seq(1994,2018,5))+
   scale_fill_jama()+
   theme_classic()
 
-p1 <- p0 + labs(x="Years",
+region_p1 <- region_p0 + labs(x="Year",
                 Y= "Allocation",
-                subtitle= "1.a",
+                subtitle= "1.b",
                 caption = "Source: NOAA")
+region_p1
 
+grid.arrange(cause_p1, region_p1)
 
 ```
 
