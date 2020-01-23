@@ -4,8 +4,8 @@ author: "Vienna Saccomanno"
 date: "1/16/2020"
 output:
   word_document: default
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -62,6 +62,8 @@ region_p0 <- ggplot(allo_region, aes(fill= Region, y=Allocation, x=Year))+
 
 
 grid.arrange(cause_p0, region_p0)
+p<- arrangeGrob(cause_p0, region_p0)
+ggsave("Fig1.png",width = 6, height = 5, p)
 
 ```
 
@@ -111,20 +113,22 @@ region_p5 <- ggplot(styr_region, aes(fill= Region, y=StateYears, x=Year))+
   scale_y_continuous(breaks=seq(0,12,2))+
   scale_x_continuous(breaks=seq(1989,2019,5))+
   scale_fill_brewer(palette = "YlGnBu")+
-  labs(x="Year", y= "State-year", subtitle= "C")+
+  labs(x="Year", y= "State-years", subtitle= "C")+
   theme_classic()
 
 #Stateyear by cause - D
 cause_p5 <- ggplot(styr_cause, aes(fill= Cause, y=StateYears, x=Year))+
   geom_bar(position = "stack", stat= "identity")+
   ylim(0, 12.0)+
-  #scale_y_continuous(breaks=seq(0,10,2.5))+
+  scale_y_continuous(breaks=seq(0,12,2.0))+
   scale_x_continuous(breaks=seq(1989,2019,5))+
   scale_fill_brewer(palette = "YlOrBr")+
-  labs(x="Year", y= "State-year", subtitle= "D", caption = "Source: NOAA")+
+  labs(x="Year", y= "State-years", subtitle= "D", caption = "Source: NOAA")+
   theme_classic()
 
 
 grid.arrange(region_p3, region_p5, cause_p3, cause_p5)
+g<- arrangeGrob(region_p3, region_p5, cause_p3, cause_p5)
+ggsave("Fig2.png",width = 10, height = 5, g)
 ```
 

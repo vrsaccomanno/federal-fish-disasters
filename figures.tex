@@ -227,7 +227,7 @@
 ## [1] "rlang_is_string"
 ## 
 ## $address
-## <pointer: 0x0000000013d857f0>
+## <pointer: 0x0000000013d86210>
 ## attr(,"class")
 ## [1] "RegisteredNativeSymbol"
 ## 
@@ -301,6 +301,24 @@
 
 \includegraphics{figures_files/figure-latex/unnamed-chunk-2-1.pdf}
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p<-}\StringTok{ }\KeywordTok{arrangeGrob}\NormalTok{(cause_p0, region_p0)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: Removed 1369 rows containing missing values (position_stack).
+
+## Warning: Removed 121 rows containing missing values (position_stack).
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggsave}\NormalTok{(}\StringTok{"Fig1.png"}\NormalTok{,}\DataTypeTok{width =} \DecValTok{6}\NormalTok{, }\DataTypeTok{height =} \DecValTok{5}\NormalTok{, p)}
+\end{Highlighting}
+\end{Shaded}
+
 \#\#\#Making frequency and state-year bar charts on trends
 
 \begin{Shaded}
@@ -356,7 +374,7 @@
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}\DataTypeTok{breaks=}\KeywordTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{12}\NormalTok{,}\DecValTok{2}\NormalTok{))}\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}\DataTypeTok{breaks=}\KeywordTok{seq}\NormalTok{(}\DecValTok{1989}\NormalTok{,}\DecValTok{2019}\NormalTok{,}\DecValTok{5}\NormalTok{))}\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}\DataTypeTok{palette =} \StringTok{"YlGnBu"}\NormalTok{)}\OperatorTok{+}
-\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x=}\StringTok{"Year"}\NormalTok{, }\DataTypeTok{y=} \StringTok{"State-year"}\NormalTok{, }\DataTypeTok{subtitle=} \StringTok{"C"}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x=}\StringTok{"Year"}\NormalTok{, }\DataTypeTok{y=} \StringTok{"State-years"}\NormalTok{, }\DataTypeTok{subtitle=} \StringTok{"C"}\NormalTok{)}\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme_classic}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
@@ -372,13 +390,21 @@
 \NormalTok{cause_p5 <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(styr_cause, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{fill=}\NormalTok{ Cause, }\DataTypeTok{y=}\NormalTok{StateYears, }\DataTypeTok{x=}\NormalTok{Year))}\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{position =} \StringTok{"stack"}\NormalTok{, }\DataTypeTok{stat=} \StringTok{"identity"}\NormalTok{)}\OperatorTok{+}
 \StringTok{  }\KeywordTok{ylim}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{12.0}\NormalTok{)}\OperatorTok{+}
-\StringTok{  }\CommentTok{#scale_y_continuous(breaks=seq(0,10,2.5))+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}\DataTypeTok{breaks=}\KeywordTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{12}\NormalTok{,}\FloatTok{2.0}\NormalTok{))}\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}\DataTypeTok{breaks=}\KeywordTok{seq}\NormalTok{(}\DecValTok{1989}\NormalTok{,}\DecValTok{2019}\NormalTok{,}\DecValTok{5}\NormalTok{))}\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}\DataTypeTok{palette =} \StringTok{"YlOrBr"}\NormalTok{)}\OperatorTok{+}
-\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x=}\StringTok{"Year"}\NormalTok{, }\DataTypeTok{y=} \StringTok{"State-year"}\NormalTok{, }\DataTypeTok{subtitle=} \StringTok{"D"}\NormalTok{, }\DataTypeTok{caption =} \StringTok{"Source: NOAA"}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x=}\StringTok{"Year"}\NormalTok{, }\DataTypeTok{y=} \StringTok{"State-years"}\NormalTok{, }\DataTypeTok{subtitle=} \StringTok{"D"}\NormalTok{, }\DataTypeTok{caption =} \StringTok{"Source: NOAA"}\NormalTok{)}\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme_classic}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
 
+\begin{verbatim}
+## Scale for 'y' is already present. Adding another scale for 'y', which will
+## replace the existing scale.
+\end{verbatim}
 
+\begin{Shaded}
+\begin{Highlighting}[]
 \KeywordTok{grid.arrange}\NormalTok{(region_p3, region_p5, cause_p3, cause_p5)}
 \end{Highlighting}
 \end{Shaded}
@@ -392,5 +418,23 @@
 \end{verbatim}
 
 \includegraphics{figures_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{g<-}\StringTok{ }\KeywordTok{arrangeGrob}\NormalTok{(region_p3, region_p5, cause_p3, cause_p5)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: Removed 84 rows containing missing values (position_stack).
+
+## Warning: Removed 88 rows containing missing values (position_stack).
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggsave}\NormalTok{(}\StringTok{"Fig2.png"}\NormalTok{,}\DataTypeTok{width =} \DecValTok{10}\NormalTok{, }\DataTypeTok{height =} \DecValTok{5}\NormalTok{, g)}
+\end{Highlighting}
+\end{Shaded}
 
 \end{document}
