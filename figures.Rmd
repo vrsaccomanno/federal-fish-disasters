@@ -78,45 +78,35 @@ grid.arrange(cause_p1, region_p1)
 #By Region
 freq_region <- read.delim("By Region/Frequency_1994-2019.txt")
 styr_region<- read.delim("By Region/StateYears_1989-2019.txt")
+View(freq_region)
 
 #By cause
 freq_cause <- read.delim("By Cause/Frequency_by_cause.txt")
 styr_cause<- read.delim("By Cause/State-years_by_cause.txt")
-
+View(styr_cause)
 
 #Changing legend order
 levels(freq_cause$Cause)
+styr_cause$Cause<- factor(styr_cause$Cause, levels = c("Anthropogenic", "Environmental", "Combination of both"))
 freq_cause$Cause<- factor(freq_cause$Cause, levels = c("Anthropogenic", "Environmental", "Combination of both"))
-
-
-#Frequency by cause -B
-cause_p3 <- ggplot(freq_cause, aes(fill= Cause, y=Frequency, x=Year))+
-  geom_bar(position = "stack", stat= "identity")+
-  ylim(0, 10)+
-  scale_x_continuous(breaks=seq(1995,2019,5))+
-  scale_fill_uchicago()+
-  labs(x="Year", Y= "Frequency", subtitle= "B")+
-  theme_classic()
-
-
-#Stateyear by cause - D
-cause_p5 <- ggplot(styr_cause, aes(fill= Cause, y=StateYears, x=Year))+
-  geom_bar(position = "stack", stat= "identity")+
-  ylim(0, 12.0)+
-  #scale_y_continuous(breaks=seq(0,10,2.5))+
-  scale_x_continuous(breaks=seq(1995,2019,5))+
-  scale_fill_uchicago()+
-  labs(x="Year", Y= "State-year", subtitle= "D")+
-  theme_classic()
 
 
 #Frequency by Region -A
 region_p3 <- ggplot(freq_region, aes(fill= Region, y=Frequency, x=Year))+
   geom_bar(position = "stack", stat= "identity")+
   ylim(0, 10)+
-  scale_x_continuous(breaks=seq(1995,2019,5))+
+  scale_x_continuous(breaks=seq(1994,2019,5))+
   scale_fill_uchicago()+
   labs(x="Year", Y= "Frequency", subtitle= "A")+
+  theme_classic()
+
+#Frequency by cause -B
+cause_p3 <- ggplot(freq_cause, aes(fill= Cause, y=Frequency, x=Year))+
+  geom_bar(position = "stack", stat= "identity")+
+  ylim(0, 10)+
+  scale_x_continuous(breaks=seq(1994,2019,5))+
+  scale_fill_aaas()+
+  labs(x="Year", Y= "Frequency", subtitle= "B")+
   theme_classic()
 
 
@@ -124,13 +114,23 @@ region_p3 <- ggplot(freq_region, aes(fill= Region, y=Frequency, x=Year))+
 region_p5 <- ggplot(styr_region, aes(fill= Region, y=StateYears, x=Year))+
   geom_bar(position = "stack", stat= "identity")+
   ylim(0, 12.0)+
-  #scale_y_continuous(breaks=seq(0,10,2.5))+
-  scale_x_continuous(breaks=seq(1995,2019,5))+
+  scale_y_continuous(breaks=seq(0,12,2))+
+  scale_x_continuous(breaks=seq(1989,2019,5))+
   scale_fill_uchicago()+
-  labs(x="Year", Y= "State-year", subtitle= "C")+
+  labs(x="Year", y= "State-year", subtitle= "C")+
+  theme_classic()
+
+#Stateyear by cause - D
+cause_p5 <- ggplot(styr_cause, aes(fill= Cause, y=StateYears, x=Year))+
+  geom_bar(position = "stack", stat= "identity")+
+  ylim(0, 12.0)+
+  #scale_y_continuous(breaks=seq(0,10,2.5))+
+  scale_x_continuous(breaks=seq(1989,2019,5))+
+  scale_fill_aaas()+
+  labs(x="Year", y= "State-year", subtitle= "D")+
   theme_classic()
 
 
-grid.arrange(region_p3, cause_p3, region_p5, cause_p5)
+grid.arrange(region_p3, region_p5, cause_p3, cause_p5)
 ```
 
