@@ -46,7 +46,7 @@ cause_p0 <- ggplot(allo_cause, aes(fill= Cause, y=Allocation, x=Year))+
   geom_bar(position = "stack", stat= "identity")+
   scale_y_continuous(labels = scales::dollar)+
   scale_x_continuous(breaks=seq(1994,2019,5))+
-  labs(x="", y= "Allocation", subtitle= "A")+
+  labs(x="", y= "Allocation", subtitle= "B")+
   scale_fill_brewer(palette = "YlOrBr")+
   theme_classic()
 
@@ -56,13 +56,13 @@ region_p0 <- ggplot(allo_region, aes(fill= Region, y=Allocation, x=Year))+
   geom_bar(position = "stack", stat= "identity")+
   scale_y_continuous(labels = scales::dollar)+
   scale_x_continuous(breaks=seq(1994,2019,5))+
-  labs(x="Year", y= "Allocation", subtitle= "B", caption = "Source: NOAA")+
+  labs(x="Year", y= "Allocation", subtitle= "A", caption = "Source: NOAA")+
   scale_fill_brewer(palette = "YlGnBu")+
   theme_classic()
 
 
-grid.arrange(cause_p0, region_p0)
-p<- arrangeGrob(cause_p0, region_p0)
+grid.arrange(region_p0,cause_p0)
+p<- arrangeGrob(region_p0,cause_p0)
 ggsave("Fig1.png",width = 6, height = 5, p)
 
 ```
