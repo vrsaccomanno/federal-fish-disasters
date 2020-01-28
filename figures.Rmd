@@ -26,8 +26,10 @@ library(ggsci)
 library(gridExtra)
 library(ggplot2)
 library(RColorBrewer)
+library(cowplot)
+library(egg)
+library(gtable)
 
-rlang:::rlang_is_string
 ```
 
 ###Making allocation bar charts on trends
@@ -46,7 +48,7 @@ cause_p0 <- ggplot(allo_cause, aes(fill= Cause, y=Allocation, x=Year))+
   geom_bar(position = "stack", stat= "identity")+
   scale_y_continuous(labels = scales::dollar)+
   scale_x_continuous(breaks=seq(1994,2019,5))+
-  labs(x="", y= "Allocation", subtitle= "B")+
+  labs(x="", y= "Allocation", subtitle= "B", caption = "Source: NOAA")+
   scale_fill_brewer(palette = "YlOrBr")+
   theme_classic()
 
@@ -56,13 +58,22 @@ region_p0 <- ggplot(allo_region, aes(fill= Region, y=Allocation, x=Year))+
   geom_bar(position = "stack", stat= "identity")+
   scale_y_continuous(labels = scales::dollar)+
   scale_x_continuous(breaks=seq(1994,2019,5))+
-  labs(x="Year", y= "Allocation", subtitle= "A", caption = "Source: NOAA")+
+  labs(x="Year", y= "Allocation", subtitle= "A")+
   scale_fill_brewer(palette = "YlGnBu")+
   theme_classic()
 
+#Combining plots
+A <- ggplotGrob(region_p0)
+B <- ggplotGrob(cause_p0)
 
-grid.arrange(region_p0,cause_p0)
-p<- arrangeGrob(region_p0,cause_p0)
+# Set the widths
+A$widths <- B$widths
+
+# Arrange the two charts.
+# The legend boxes are centered
+
+grid.arrange(A, B, nrow = 2)
+p<- arrangeGrob(A,B) 
 ggsave("Fig1.png",width = 6, height = 5, p)
 
 ```
@@ -93,7 +104,7 @@ region_p3 <- ggplot(freq_region, aes(fill= Region, y=Frequency, x=Year))+
   ylim(0, 10)+
   scale_x_continuous(breaks=seq(1994,2019,5))+
   scale_fill_brewer(palette = "YlGnBu")+
-  labs(x="Year", Y= "Frequency", subtitle= "A")+
+  labs(x="Year", y= "Disaster frequency", subtitle= "A")+
   theme_classic()
 
 #Frequency by cause -B
@@ -102,33 +113,48 @@ cause_p3 <- ggplot(freq_cause, aes(fill= Cause, y=Frequency, x=Year))+
   ylim(0, 10)+
   scale_x_continuous(breaks=seq(1994,2019,5))+
   scale_fill_brewer(palette = "YlOrBr")+
-  labs(x="Year", Y= "Frequency", subtitle= "B")+
+  labs(x="Year", y= "Disaster frequency", subtitle= "B")+
   theme_classic()
 
 
 #Stateyear by Region - C
 region_p5 <- ggplot(styr_region, aes(fill= Region, y=StateYears, x=Year))+
   geom_bar(position = "stack", stat= "identity")+
-  ylim(0, 12.0)+
-  scale_y_continuous(breaks=seq(0,12,2))+
+  ylim(0, 10.0)+
+  #scale_y_continuous(breaks=seq(0,12,2.5), labels = scales::number_format(accuracy = 0.1))+
   scale_x_continuous(breaks=seq(1989,2019,5))+
   scale_fill_brewer(palette = "YlGnBu")+
-  labs(x="Year", y= "State-years", subtitle= "C")+
+  labs(x="Year", y= "State-year frequency", subtitle= "C")+
   theme_classic()
 
 #Stateyear by cause - D
 cause_p5 <- ggplot(styr_cause, aes(fill= Cause, y=StateYears, x=Year))+
   geom_bar(position = "stack", stat= "identity")+
-  ylim(0, 12.0)+
-  scale_y_continuous(breaks=seq(0,12,2.0))+
+  ylim(0, 10.0)+
+  #scale_y_continuous(breaks=seq(0,12,2.0))+
   scale_x_continuous(breaks=seq(1989,2019,5))+
   scale_fill_brewer(palette = "YlOrBr")+
-  labs(x="Year", y= "State-years", subtitle= "D", caption = "Source: NOAA")+
+  labs(x="Year", y= "State-year frequency", subtitle= "D")+
   theme_classic()
 
+#Combining plots
+pA <- ggplotGrob(region_p3)
+pB <- ggplotGrob(cause_p3)
+pC <- ggplotGrob(region_p5)
+pD <- ggplotGrob(cause_p5)
 
-grid.arrange(region_p3, region_p5, cause_p3, cause_p5)
-g<- arrangeGrob(region_p3, region_p5, cause_p3, cause_p5)
+# Set the widths
+pA$widths <- pB$widths
+pA$widths <- pD$widths
+pA$widths <- pC$widths
+
+# Arrange the two charts.
+# The legend boxes are centered
+
+grid.arrange(pA, pC, pB, pD, nrow = 2)
+
+#grid.arrange(region_p3, region_p5, cause_p3, cause_p5)
+g<- arrangeGrob(pA, pC,pB, pD)
 ggsave("Fig2.png",width = 10, height = 5, g)
 ```
 
