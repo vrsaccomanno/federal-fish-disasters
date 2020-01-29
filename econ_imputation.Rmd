@@ -90,13 +90,24 @@ qqnorm(econ_impute$dollar_diff_real)
 shapiro.test(econ_impute$dollar_diff_real)
 #p-value = 4.785e-12 = statisticlly different from a normal distribution
 
-# Pull revenue change (real) as a vector
-econ_change <- econ_impute%>% 
+# Pull revenue change (real) as a vector with imputed values
+econ_change1 <- econ_impute%>% 
   pull(dollar_diff_real)
+summary(econ_change1)
+sum(econ_change1) #2,886,131,834
+
+
+# Pull revenue change (real) as a vector without imputed values
+econ_change <- econ_raw%>% 
+  pull(dollar_diff_real)%>%
+  na.omit
+View(econ_change)
 summary(econ_change)
 # Min.          1st Qu.     Median       Mean    3rd Qu.       Max. 
 #-139911239     524045    3975456   34358712   18037557  300618829 
-sum(econ_change) #2,886,131,834
+sum(econ_change) #2,811,430,215
+
+
 ```
 
 ###3. Use the set.seed function to ensure all results, figures, etc are reproducible.
@@ -125,7 +136,7 @@ ggplot() +
   aes(boot_mean_100000$t) +
   geom_histogram()
 
-boot_mean_100000$t0 # to report the mean of the original sample =$34,358,712
+boot_mean_100000$t0 # to report the mean of the original sample =$37,485,736
 boot_mean_100000 # to report bias, SE
 #Bias (difference between original sample mean and bootstrapped sampling mean)=-17,237.63
 #Std. error (SD of bootstrapped sampling distribution)=$8,780,000
@@ -208,5 +219,14 @@ mean(appropiation_ratio$app_ratio)
 median(appropiation_ratio$app_ratio)
 #0.4620938
 
+```
+
+```{r}
+citation(package = "base", lib.loc = NULL)
+citation("boot")
+## S3 method for class 'citation':
+toBibtex(object, ...)
+## S3 method for class 'citationList':
+toBibtex(object, ...)
 ```
 
