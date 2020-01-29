@@ -27,7 +27,7 @@ library(simputation)
 ```{r}
 #Load data
 econ_raw <- read_csv("C:/Users/v.r.saccomanno/Desktop/econ_est_R_2.csv")
-View(econ_raw)
+#View(econ_raw)
 
 ```
 
@@ -52,7 +52,7 @@ na_shadow <- bind_shadow(econ_raw)
 econ_raw %>%
   impute_median(dollar_diff_real ~ management) %>%
   ggplot(aes(x=dollar_diff_real,
-           y=management)) + 
+          y=management)) + 
   geom_point()
 
 # Show which ones are actually imputed with shadow matrix...
@@ -67,6 +67,11 @@ impute_median(dollar_diff_real ~ management) %>%
 econ_impute<- impute_median(na_shadow, dollar_diff_real ~ management)
 head(econ_impute, 15)
 View(econ_impute)
+
+sum(econ_impute[econ_impute$dollar_diff_real >1,]$dollar_diff_real) #3,287,758,125
+median(econ_impute[econ_impute$dollar_diff_real >1,]$dollar_diff_real) #12576752
+mean(econ_impute[econ_impute$dollar_diff_real >1,]$dollar_diff_real)#48349384
+median(econ_impute$dollar_diff_real) #3975456
 
 ```
 
