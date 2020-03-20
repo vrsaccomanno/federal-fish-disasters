@@ -26,7 +26,7 @@ library(naniar)
 ```{r}
 #Load data
 econ_raw <- read_csv("C:/Users/v.r.saccomanno/Desktop/econ_est_R_2.csv")
-#View(econ_raw)
+View(econ_raw)
 
 ```
 
@@ -44,10 +44,10 @@ qqnorm(econ_raw$dollar_diff_real)
 
 #Test for normality
 shapiro.test(econ_raw$dollar_diff_real)
-#p-value = 1.153e-10 = statisticlly different from a normal distribution
+#p-value = 3.831e-11 = statisticlly different from a normal distribution
 
 
-# Pull revenue change (real) as a vector without imputed values
+# Pull revenue change (real) as a vector without imputed values (removes the 8 NAs)
 econ_change <- econ_raw%>% 
   pull(dollar_diff_real)%>%
   na.omit
@@ -55,8 +55,8 @@ econ_change <- econ_raw%>%
 View(econ_change)
 summary(econ_change)
 #      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
-#-139911239     381701    3975456   37065156   20567427  300618829 
-sum(econ_change) #2,816,951,820
+#-139911239     359470    3428735   36007071   19732564  300618829 
+sum(econ_change) #2,808,551,533
 
 ```
 

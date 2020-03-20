@@ -138,8 +138,8 @@ ggplot() +
 
 boot_mean_100000$t0 # to report the mean of the original sample =$37,485,736
 boot_mean_100000 # to report bias, SE
-#Bias (difference between original sample mean and bootstrapped sampling mean)=-17,237.63
-#Std. error (SD of bootstrapped sampling distribution)=$8,780,000
+#Bias (difference between original sample mean and bootstrapped sampling mean)=$14,723.53
+#Std. error (SD of bootstrapped sampling distribution)=$9,752,627
 
 ################
 #### Create a function to calculate the MEDIAN of varying vectors (x) of index (i)
@@ -159,10 +159,10 @@ ggplot() +
   aes(boot_med_100000$t) +
   geom_histogram()
 
-boot_med_100000$t0 # Median of the original sample =$5,660,068
+boot_med_100000$t0 # Median of the original sample =$3,548,578
 boot_med_100000 # to report bias, SE
-#Bias (difference between original sample median and bootstrapped sampling median)=$1,225,099
-#Std. error (SD of bootstrapped sampling distribution)= $3,390,030
+#Bias (difference between original sample median and bootstrapped sampling median)=$1,195,517
+#Std. error (SD of bootstrapped sampling distribution)= $3,177,266
 
 
 # 1000000 bootstrap samples:
@@ -184,7 +184,7 @@ boot.ci(boot_mean_100000, conf = 0.95, type = 'basic') #'basic' = compute differ
 #Level      Basic         
 #95%   (16,308,393, 50,687,425)  
 
-# Mean, direct revenue loss in a disaster year is $34,358,712 ($US2019) (n=76), with a boot strapped 95% confidence interval of [$17,704,773, $55,547,146] (n= 100,000 bootstrap samples).
+# Mean, direct revenue loss in a disaster year is $37,485,736 ($US2019) (n=76), with a boot strapped 95% confidence interval of [$17553115, $55654965] (n= 100,000 bootstrap samples).
 
 #######################
 
@@ -193,9 +193,9 @@ boot.ci(boot_med_100000, conf = 0.95, type = 'basic') #'basic' = compute differe
 
 #Intervals : 
 #Level      Basic         
-#95%   (-4,834,947,  6,204,245) 
+#95%   (-5270491,  5539234) 
 
-# Median, direct revenue loss in a disaster year is $5,660,068 ($US2019) (n=72), with a boot strapped 95% confidence interval of [-$2,157,907,  $9,633,001] (n= 100,000 bootstrap samples).
+# Median, direct revenue loss in a disaster year is $3,548,578($US2019) (n=72), with a boot strapped 95% confidence interval of [-$5270491,  $5539234] (n= 100,000 bootstrap samples).
   
 ```
 

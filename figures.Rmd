@@ -17,8 +17,7 @@ options(tinytex.verbose = TRUE)
 
 ```{r}
 library(dplyr)
-library(rlang)
-#library(tidyverse)
+library(tidyverse)
 library(readr)
 library(viridis)
 library(hrbrthemes)
@@ -29,6 +28,11 @@ library(RColorBrewer)
 library(cowplot)
 library(egg)
 library(gtable)
+
+## For tables
+library(stargazer)
+library(formattable)
+library(sjPlot)
 
 ```
 
@@ -156,5 +160,24 @@ grid.arrange(pA, pC, pB, pD, nrow = 2)
 #grid.arrange(region_p3, region_p5, cause_p3, cause_p5)
 g<- arrangeGrob(pA, pC,pB, pD)
 ggsave("Fig2.png",width = 10, height = 5, g)
+```
+
+###Making tables
+
+```{r}
+
+#load data
+library(readr)
+sup_table <- read_csv("C:/Users/v.r.saccomanno/Desktop/Supp_econ_table_csv_R.csv")
+View(sup_table)
+
+sjt.df(sup_table)
+
+stargazer(sup_table,
+digits=2,
+title="Direct economic impact, summary",
+type = "html",
+out="star_econ.doc")
+
 ```
 
