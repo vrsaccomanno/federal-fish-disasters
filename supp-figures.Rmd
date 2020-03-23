@@ -2,7 +2,9 @@
 title: "Supp Econ Table"
 author: "Vienna Saccomanno"
 date: "3/23/2020"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -12,14 +14,17 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r}
-#Attach packages
+options(kableExtra.latex.load_packages = FALSE)
 
-library(ggplot2)
-library(readr)
+
+#Attach packages
 library(tidyverse)
 library(knitr)
 library(kableExtra)
 library(latexpdf)
+
+devtools::install_github("haozhu233/kableExtra")
+
 
 ```
 
@@ -27,28 +32,19 @@ library(latexpdf)
 ```{r}
 #Load data
 
-Supp_econ_table <- read_csv("C:/Users/v.r.saccomanno/Desktop/Fed. Fish Disasters/Supp_econ_table_csv_R_FINAL.csv")
-View(Supp_econ_table)
+supp <- read_csv("C:/Users/v.r.saccomanno/Desktop/Fed. Fish Disasters/Supp_econ_table_csv_R_FINAL.csv")
+View(supp)
 
-#set global option
-options(knitr.table.format = "latex")
 
 ```
 
 ```{r}
 #make tables
 
-Supp_econ_table %>%
-  kable() %>%
-  kable_styling()
-
-#Bootstrap
-kable(Supp_econ_table) %>%
-  kable_styling(bootstrap_options = c("striped", "condensed"))
-
 #Bootstap + LaTex
-option_2<- kable(Supp_econ_table, "latex", booktabs = T) %>%
-kable_styling(latex_options = "striped")
+kable(supp,"latex")
+
+
 
 ```
 
