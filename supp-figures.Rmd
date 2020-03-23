@@ -19,6 +19,7 @@ library(readr)
 library(tidyverse)
 library(knitr)
 library(kableExtra)
+library(latexpdf)
 
 ```
 
@@ -28,6 +29,9 @@ library(kableExtra)
 
 Supp_econ_table <- read_csv("C:/Users/v.r.saccomanno/Desktop/Fed. Fish Disasters/Supp_econ_table_csv_R_FINAL.csv")
 View(Supp_econ_table)
+
+#set global option
+options(knitr.table.format = "latex")
 
 ```
 
