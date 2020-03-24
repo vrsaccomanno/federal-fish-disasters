@@ -25,7 +25,7 @@ library(dplyr)
 library(magick)
 library(webshot)
 
-webshot::install_phantomjs()
+#webshot::install_phantomjs()
 
 ```
 
