@@ -14,17 +14,16 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r}
-options(kableExtra.latex.load_packages = FALSE)
 
 
 #Attach packages
-library(tidyverse)
 library(knitr)
 library(kableExtra)
-library(latexpdf)
-
-devtools::install_github("haozhu233/kableExtra")
-
+#library(rmarkdown)
+library(tidyverse)
+library(dplyr)
+#library(tinytex)
+#library(xtable)
 
 ```
 
@@ -32,19 +31,33 @@ devtools::install_github("haozhu233/kableExtra")
 ```{r}
 #Load data
 
-supp <- read_csv("C:/Users/v.r.saccomanno/Desktop/Fed. Fish Disasters/Supp_econ_table_csv_R_FINAL.csv")
-View(supp)
+supp <- read_csv("C:/Users/v.r.saccomanno/Desktop/Fed_Fish_Disasters/Supp_econ_table_csv_R_FINAL.csv")
+#View(supp)
 
 
 ```
 
 ```{r}
-#make tables
-
-#Bootstap + LaTex
-kable(supp,"latex")
 
 
+kable(supp, "latex", booktabs = T, longtable = T, align =rep("l", 8),
+      caption = "Summary of revenue impact by all approved Federal Fisheries Disasters")%>%
+  kable_styling(latex_options = c("striped", "scale_down", "repeat_header")) %>%
+  landscape(margin = NULL)%>%
+  column_spec(1, width = "6em")%>%
+  column_spec(2, width = "6em")%>%
+  column_spec(3, width = "6em")%>%
+  column_spec(4, width = "8em")%>%
+  column_spec(5, width = "6em")%>%
+  column_spec(6, width = "8em")%>%
+  column_spec(7, width = "6em")%>%
+  column_spec(8, width = "15em")%>%
+  row_spec(0, bold= T)
 
 ```
+
+
+
+
+
 
