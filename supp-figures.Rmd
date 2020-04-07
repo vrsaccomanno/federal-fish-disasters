@@ -4,8 +4,8 @@ author: "Vienna Saccomanno"
 date: "3/23/2020"
 output:
   pdf_document: default
-  word_document: default
   html_document: default
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -18,6 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 #Attach packages
+library(readr)
 library(knitr)
 library(kableExtra)
 library(tidyverse)
@@ -32,29 +33,30 @@ library(webshot)
 
 ```{r, warning=FALSE, message=FALSE}
 #Load data
+supp <- read_csv("C:/Users/v.r.saccomanno/Desktop/Fed_Fish_Disasters/Final_figures/supplemental_table.csv")
 
-supp <- read_csv("C:/Users/v.r.saccomanno/Desktop/Fed_Fish_Disasters/Supp_econ_table_csv_R_FINAL.csv")
 #View(supp)
 
 ```
 
 ```{r, warning=FALSE, message=FALSE}
+#Create Supplemental table
 
-
-kable(supp, "latex", booktabs = T, longtable = T, align =rep("l", 8))%>%
-  kable_styling(latex_options = c("striped", "full_width", "repeat_header"), font_size = 8) %>%
-  #landscape(margin = NULL)%>%
-  column_spec(1, width = "5em")%>%
-  column_spec(2, width = "6em")%>%
-  column_spec(3, width = "5em")%>%
-  column_spec(4, width = "7em")%>%
-  column_spec(5, width = "5em")%>%
+kable(supp, "latex", booktabs = T, longtable = T, align =rep("l", 10))%>%
+  footnote(symbol = c("ADFG: Alaska Department of Fish and Game", "CDWF: California Department of Fish and Wildlife",  "FFWCC: Florida Fish and Wildlife Conservation Commission", "GDNR: Georgia Department of Natural Resources/Coastal Resources Division", "NCDENR: North Carolina Department of Environment and Natural Resources", "NCDMF: North Carolina Division of Marine Fisheries", "ODFW: Oregon Department of Fish and Wildlife", "PacFIN: Pacific Fisheries Information Network", "PFMC: Pacific Fisheries Management Council", "SWFSC: Southwest Fisheries Science Center"))%>%
+  kable_styling(latex_options = c("striped", full_width = F, "repeat_header"), font_size = 5) %>%
+  column_spec(1, width = "3.5em")%>%
+  column_spec(2, width = "3.5em")%>%
+  column_spec(3, width = "4em")%>%
+  column_spec(4, width = "5em")%>%
+  column_spec(5, width = "3.5em")%>%
   column_spec(6, width = "5em")%>%
-  column_spec(7, width = "5em")%>%
-  column_spec(8, width = "8em")%>%
+  column_spec(7, width = "7.5em")%>%
+  column_spec(8, width = "5em")%>%
+  column_spec(9, width = "6em")%>%
   row_spec(0, bold= T)%>%
-  footnote(number = c("ADFG: Alaska Department of Fish and Game", "CDWF: California Department of Fish and Wildlife",  "FFWCC: Florida Fish and Wildlife Conservation Commission", "GDNR: Georgia Department of Natural Resources/Coastal Resources Division", "NCDENR: North Carolina Department of Environment and Natural Resources", "NCDMF: North Carolina Division of Marine Fisheries", "ODFW: Oregon Department of Fish and Wildlife", "PacFIN: Pacific Fisheries Information Network", "PFMC: Pacific Fisheries Management Council", "SWFSC: Southwest Fisheries Science Center"))
- # as_image(width=8)
+  save_kable("supplemental_table.pdf")
+  #as_image()
 
 ```
 
