@@ -25,7 +25,7 @@ library(naniar)
 
 ```{r}
 #Load data
-econ_raw <- read_csv("C:/Users/v.r.saccomanno/Desktop/econ_est_R_2.csv")
+econ_raw <- read_csv("data/econ_est_R_2.csv")
 View(econ_raw)
 
 ```
@@ -44,7 +44,7 @@ qqnorm(econ_raw$dollar_diff_real)
 
 #Test for normality
 shapiro.test(econ_raw$dollar_diff_real)
-#p-value = 3.831e-11 = statisticlly different from a normal distribution
+#p-value = 1.167e-10 = statisticlly different from a normal distribution
 
 
 # Pull revenue change (real) as a vector (removes the 8 NAs)
@@ -55,8 +55,8 @@ econ_change <- econ_raw%>%
 View(econ_change)
 summary(econ_change)
 #      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
-#-139911239     359470    3428735   36007071   19732564  300618829 
-sum(econ_change) #2,808,551,533
+# -139911239     421652    4402333   37558907   21272846  300618829 
+sum(econ_change) #2816918041
 
 ```
 
@@ -82,10 +82,10 @@ ggplot() +
   aes(boot_mean_100000$t) +
   geom_histogram()
 
-boot_mean_100000$t0 # to report the mean of the original sample =$36,007,071
+boot_mean_100000$t0 # to report the mean of the original sample =$37,558,907
 boot_mean_100000 # to report bias, SE
-#Bias (difference between original sample mean and bootstrapped sampling mean)= $23,241.39
-#Std. error (SD of bootstrapped sampling distribution)=$9,418,710
+#Bias (difference between original sample mean and bootstrapped sampling mean)= $-8289.469
+#Std. error (SD of bootstrapped sampling distribution)=$9768967
 
 
 ################
@@ -94,17 +94,17 @@ boot_mean_100000 # to report bias, SE
 median_fun <- function (x,i) {median(x[i])}
 
 # 100000 bootstrap samples:
-set.seed(12345)
+#set.seed(12345)
 boot_med_100000 <- boot(econ_change, median_fun, R = 100000)
 
 ggplot() +
   aes(boot_med_100000$t) +
   geom_histogram()
 
-boot_med_100000$t0 # Median of the original sample =$3,428,735
+boot_med_100000$t0 # Median of the original sample =$4,402,333
 boot_med_100000 # to report bias, SE
-#Bias (difference between original sample median and bootstrapped sampling median)=$762,541.7
-#Std. error (SD of bootstrapped sampling distribution)= $2,601,390
+#Bias (difference between original sample median and bootstrapped sampling median)=$669,888.7
+#Std. error (SD of bootstrapped sampling distribution)= $3081214
 
 ```
 
@@ -117,9 +117,9 @@ boot.ci(boot_mean_100000, conf = 0.95, type = 'basic') #'basic' = compute differ
 
 #Intervals : 
 #Level      Basic         
-#95%   (16693561, 53,584,859)  
+#95%   (17686616, 55775565 )  
 
-# Mean, direct revenue loss in a disaster year is $36,007,071 ($US2019) (n=78), with a boot strapped 95% confidence interval of [$16,693,561, 53,584,859] (n= 100,000 bootstrap samples).
+# Mean, direct revenue loss in a disaster year is $37,558,907 ($US2019) (n=78), with a boot strapped 95% confidence interval of [$17,686,616, $55,775,565] (n= 100,000 bootstrap samples).
 
 #######################
 
@@ -128,9 +128,9 @@ boot.ci(boot_med_100000, conf = 0.95, type = 'basic') #'basic' = compute differe
 
 #Intervals : 
 #Level      Basic         
-#95%   (-5,031,360,  5,320,699) 
+#95%   (-3562980,  7117533 ) 
 
-# Median, direct revenue loss in a disaster year is $3,428,735 ($US2019) (n=78), with a boot strapped 95% confidence interval of [-$5,031,360,  $5,320,699)] (n= 100,000 bootstrap samples).
+# Median, direct revenue loss in a disaster year is $4,402,333($US2019) (n=78), with a boot strapped 95% confidence interval of [-$3562980,  7117533 )] (n= 100,000 bootstrap samples).
   
 ```
 
