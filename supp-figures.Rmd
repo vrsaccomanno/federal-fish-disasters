@@ -35,7 +35,7 @@ library(webshot)
 #Load data
 supp <- read_csv("C:/Users/v.r.saccomanno/Desktop/Fed_Fish_Disasters/Final_figures/supplemental_table.csv")
 
-#View(supp)
+View(supp)
 
 ```
 
