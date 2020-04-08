@@ -46,12 +46,12 @@ kable(supp, "latex", booktabs = T, longtable = T, align =rep("l", 10))%>%
   footnote(symbol = c("ADFG: Alaska Department of Fish and Game", "CDWF: California Department of Fish and Wildlife",  "FFWCC: Florida Fish and Wildlife Conservation Commission", "GDNR: Georgia Department of Natural Resources/Coastal Resources Division", "NCDENR: North Carolina Department of Environment and Natural Resources", "NCDMF: North Carolina Division of Marine Fisheries", "ODFW: Oregon Department of Fish and Wildlife", "PacFIN: Pacific Fisheries Information Network", "PFMC: Pacific Fisheries Management Council", "SWFSC: Southwest Fisheries Science Center"))%>%
   kable_styling(latex_options = c("striped", full_width = F, "repeat_header"), font_size = 5) %>%
   column_spec(1, width = "3.5em")%>%
-  column_spec(2, width = "3.5em")%>%
+  column_spec(2, width = "4em")%>%
   column_spec(3, width = "4em")%>%
   column_spec(4, width = "5em")%>%
   column_spec(5, width = "3.5em")%>%
   column_spec(6, width = "5em")%>%
-  column_spec(7, width = "7.5em")%>%
+  column_spec(7, width = "8.5em")%>%
   column_spec(8, width = "5em")%>%
   column_spec(9, width = "6em")%>%
   row_spec(0, bold= T)%>%

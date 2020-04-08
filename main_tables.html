@@ -393,6 +393,7 @@ kable(rev_loss, &quot;latex&quot;, booktabs = T)%&gt;%
   kable_styling(latex_options = c(&quot;striped&quot;, &quot;scale_down&quot;), font_size = 5) %&gt;%
   row_spec(0, bold= T)%&gt;%
   column_spec(1, bold=T)%&gt;%
+  column_spec(7, italic =T)%&gt;%
   row_spec(4, italic = T) %&gt;%
   save_kable(&quot;revenue_loss_table.pdf&quot;)
   #as_image()</code></pre>
