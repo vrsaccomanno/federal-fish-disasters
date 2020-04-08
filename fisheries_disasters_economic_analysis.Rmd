@@ -47,7 +47,7 @@ shapiro.test(econ_raw$dollar_diff_real)
 #p-value = 3.831e-11 = statisticlly different from a normal distribution
 
 
-# Pull revenue change (real) as a vector without imputed values (removes the 8 NAs)
+# Pull revenue change (real) as a vector (removes the 8 NAs)
 econ_change <- econ_raw%>% 
   pull(dollar_diff_real)%>%
   na.omit
