@@ -1,0 +1,75 @@
+# Brice X. Semmens, 04/16/20
+
+# Statistics to be done:
+# 1) Evalute change in disaster frequency and impact have increased over time
+# Approach: Poisson regression with number of declared disasters per year 
+# (or perhaps better, the number of actual disasters in a year = declared plus carry over) 
+# as response variable, and year as the explanatory variable. 
+# You could account for region as a random or fixed effect. 
+#
+# 2) Eavluate the shift in causes of fishery disasters over time
+# Approach: Ordered logistic regression, with responses (not human caused, partially 
+# human caused, and fully human caused) as ordered categories and year as the explanatory 
+# variable. Again, could include region as a random or fixed effect.
+
+# Hereâs a definition of each of field in the dataset:
+#Disaster Number: The federal ID number given on the NOAA website
+#Fishery(ies): The fishery or fisheries listed on the NOAA website
+#State: State(s) or territories listed on the NOAA website
+#Management Zone: NOAA Fisheries management region
+#Determination Year: The year that each disaster was federally determined
+#Impact year(s): The year(s) in which each disaster actually occurred
+#Disaster Cause: The causes of disasters condensed into three broad categories
+#Appropriation amount (2019 USD): Amount appropriated by Congress
+#Net Revenue Change (2019 USD): Change in ex-vessel revenue during the disaster year relative to the previous 5-year average
+#State-years: number of states and years impacted in each disaster
+
+library(tidyverse)
+### BRING IN DATA ####################################################################
+# First let's read in the raw data file (observation records in flat format)
+d.data <- read.csv("Disaster_by_Year.csv", header = T)
+
+# let's make a dataframe with # designated disasters per year per region (missing 0s)
+D.r <-as.data.frame(d.data %>%
+                     group_by(Management.Zone,Impact.Year) %>%  # Grouping by year and zone
+                     summarize( Disasters=n()))
+
+# Now add in the zeros (years where no disasters happened)
+D.z<-as.data.frame(D.r %>% group_by(Management.Zone) %>% 
+  complete(Impact.Year = seq(min(Impact.Year), 
+  max(Impact.Year)),fill = list(Disasters = 0)) )
+
+
+# first scale year to aid in convergence 
+D.z$Impact.Year<-as.vector(scale(D.z$Impact.Year))
+
+# Let's try the mixed effects version with random effects of management zone on the intercept
+ library(lme4)
+m.mix<-glmer(Disasters ~ Impact.Year + (1|Management.Zone), data=D.z,family=poisson(link="log"))
+summary(m.mix)
+
+# Ok, now let's do fixed effect of year only (assume counds IID across Management.Zone)
+# First we need to geneate the required data frame for analysis
+
+# let's make a dataframe with # designated disasters per year per region (missing 0s)
+D <-as.data.frame(d.data %>%
+                    group_by(Impact.Year) %>%  # Grouping by year
+                    summarize( Disasters=n()))
+
+# Now add in the zeros (years where no disasters happened)
+D.fix<-as.data.frame(D %>% 
+                complete(Impact.Year = seq(min(Impact.Year), 
+                max(Impact.Year)),fill = list(Disasters = 0)) )
+# first scale year to aid in convergence (toggle for plotting)
+# D.fix$Impact.Year<-as.vector(scale(D.fix$Impact.Year))
+
+# Poisson seems reasonable given mean and var of D.fix$Disasters are essentially identical
+m.fix <- glm(Disasters ~ Impact.Year, data=D.fix, family = poisson(link = "log"))
+summary(m.fix) #significant (p~0.005) for the effect of Determination year on # of disasters
+
+# ok cool, let's plot with confidence interval:
+g0 <- ggplot(D.fix,aes(x=Impact.Year,y=Disasters), main=NULL)
+glm1<-g0+geom_point()+geom_smooth(method="glm", method.args = list(family = "poisson"), 
+       se=TRUE, fill = "skyblue1")+xlab("Year")+ylab("Number of Disasters")+ theme_bw()
+glm1
+

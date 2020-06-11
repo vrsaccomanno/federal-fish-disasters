@@ -25,7 +25,7 @@ library(naniar)
 
 ```{r}
 #Load data
-econ_raw <- read_csv("data/econ_est_R_2.csv")
+econ_raw <- read_csv("econ_est_R_2.csv")
 View(econ_raw)
 
 ```
@@ -56,7 +56,7 @@ View(econ_change)
 summary(econ_change)
 #      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
 # -139911239     421652    4402333   37558907   21272846  300618829 
-sum(econ_change) #2816918041
+sum(econ_change) #2,816,918,041
 
 ```
 
@@ -75,7 +75,7 @@ set.seed(123)
 mean_fun <- function (x,i) {mean(x[i])}
 
 # 100000 bootstrap samples:
-set.seed(12345)
+#set.seed(12345)
 boot_mean_100000 <- boot(econ_change, mean_fun, R = 100000)
 
 ggplot() +
@@ -84,8 +84,8 @@ ggplot() +
 
 boot_mean_100000$t0 # to report the mean of the original sample =$37,558,907
 boot_mean_100000 # to report bias, SE
-#Bias (difference between original sample mean and bootstrapped sampling mean)= $-8289.469
-#Std. error (SD of bootstrapped sampling distribution)=$9768967
+#Bias (difference between original sample mean and bootstrapped sampling mean)= $-21,095.02
+#Std. error (SD of bootstrapped sampling distribution)=$9,769,385
 
 
 ################
@@ -103,8 +103,8 @@ ggplot() +
 
 boot_med_100000$t0 # Median of the original sample =$4,402,333
 boot_med_100000 # to report bias, SE
-#Bias (difference between original sample median and bootstrapped sampling median)=$669,888.7
-#Std. error (SD of bootstrapped sampling distribution)= $3081214
+#Bias (difference between original sample median and bootstrapped sampling median)=$664,443.9
+#Std. error (SD of bootstrapped sampling distribution)= $3,072,013
 
 ```
 
@@ -117,9 +117,9 @@ boot.ci(boot_mean_100000, conf = 0.95, type = 'basic') #'basic' = compute differ
 
 #Intervals : 
 #Level      Basic         
-#95%   (17686616, 55775565 )  
+#95%   (17549009, 55799905 )  
 
-# Mean, direct revenue loss in a disaster year is $37,558,907 ($US2019) (n=78), with a boot strapped 95% confidence interval of [$17,686,616, $55,775,565] (n= 100,000 bootstrap samples).
+# Mean, direct revenue loss in a disaster year is $37,558,907 ($US2019) (n=78), with a boot strapped 95% confidence interval of [$17,549,009, $55,799,905] (n= 100,000 bootstrap samples).
 
 #######################
 
