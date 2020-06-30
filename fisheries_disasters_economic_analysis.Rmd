@@ -44,7 +44,7 @@ qqnorm(econ_raw$dollar_diff_real)
 
 #Test for normality
 shapiro.test(econ_raw$dollar_diff_real)
-#p-value = 1.167e-10 = statisticlly different from a normal distribution
+#p-value = 2.625e-11 = statisticlly different from a normal distribution
 
 
 # Pull revenue change (real) as a vector (removes the 8 NAs)
@@ -57,6 +57,12 @@ summary(econ_change)
 #      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
 # -139911239     421652    4402333   37558907   21272846  300618829 
 sum(econ_change) #2,816,918,041
+
+
+#6/30/2020
+#      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+#-139911239     421652    3548578   35630166   19603118  300618829 
+#[1] 2814783100
 
 ```
 
@@ -82,10 +88,10 @@ ggplot() +
   aes(boot_mean_100000$t) +
   geom_histogram()
 
-boot_mean_100000$t0 # to report the mean of the original sample =$37,558,907
+boot_mean_100000$t0 # to report the mean of the original sample =$35,630,166
 boot_mean_100000 # to report bias, SE
-#Bias (difference between original sample mean and bootstrapped sampling mean)= $-21,095.02
-#Std. error (SD of bootstrapped sampling distribution)=$9,769,385
+#Bias (difference between original sample mean and bootstrapped sampling mean)= -$51,693.04
+#Std. error (SD of bootstrapped sampling distribution)=$9,296,369
 
 
 ################
@@ -101,10 +107,11 @@ ggplot() +
   aes(boot_med_100000$t) +
   geom_histogram()
 
-boot_med_100000$t0 # Median of the original sample =$4,402,333
+boot_med_100000$t0 # Median of the original sample =$3548578
 boot_med_100000 # to report bias, SE
-#Bias (difference between original sample median and bootstrapped sampling median)=$664,443.9
-#Std. error (SD of bootstrapped sampling distribution)= $3,072,013
+#Bias (difference between original sample median and bootstrapped sampling median)=$692,811.4 
+#Std. error (SD of bootstrapped sampling distribution)= $2,442,678
+
 
 ```
 
