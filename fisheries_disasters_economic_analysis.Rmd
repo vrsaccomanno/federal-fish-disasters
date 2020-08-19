@@ -47,7 +47,7 @@ shapiro.test(econ_raw$dollar_diff_real)
 #p-value = 2.625e-11 = statisticlly different from a normal distribution
 
 
-# Pull revenue change (real) as a vector (removes the 8 NAs)
+# Pull revenue change (real) as a vector (removes the 8 NAs) for all disasters for which there is data
 econ_change <- econ_raw%>% 
   pull(dollar_diff_real)%>%
   na.omit
@@ -55,14 +55,23 @@ econ_change <- econ_raw%>%
 View(econ_change)
 summary(econ_change)
 #      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
-# -139911239     421652    4402333   37558907   21272846  300618829 
-sum(econ_change) #2,816,918,041
+#-300618829  -19603118   -3548578  -35630166    -421652  139911239 
+sum(econ_change) -#2,814,783,100
 
 
-#6/30/2020
+# Pull revenue change (real) as a vector (removes the 8 NAs); isolate only loss years
+econ_change_loss <- econ_raw%>% 
+  filter(dollar_diff_real < 0)%>%
+  pull(dollar_diff_real)%>%
+  na.omit
+View(econ_change_loss)
+
+summary(econ_change_loss)
 #      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
-#-139911239     421652    3548578   35630166   19603118  300618829 
-#[1] 2814783100
+#-300618829  -57366274  -11557915  -52042019   -1691004    -244000 
+
+sum(econ_change_loss) 
+# -$3,226,605,152
 
 ```
 
@@ -76,89 +85,97 @@ set.seed(123)
 
 ```{r}
 
-#### Create a function to calculate the MEAN of varying vectors (x) of index (i)
+#### Create a function to calculate the MEAN of varying vectors (x) of index (i) - all disasters
 
 mean_fun <- function (x,i) {mean(x[i])}
 
 # 100000 bootstrap samples:
-#set.seed(12345)
 boot_mean_100000 <- boot(econ_change, mean_fun, R = 100000)
 
 ggplot() +
   aes(boot_mean_100000$t) +
   geom_histogram()
 
-boot_mean_100000$t0 # to report the mean of the original sample =$35,630,166
+boot_mean_100000$t0 # to report the mean of the original sample =-$35,630,166
 boot_mean_100000 # to report bias, SE
-#Bias (difference between original sample mean and bootstrapped sampling mean)= -$51,693.04
+#Bias (difference between original sample mean and bootstrapped sampling mean)= $51,693.04
 #Std. error (SD of bootstrapped sampling distribution)=$9,296,369
 
 
 ################
 
-#### Create a function to calculate the MEDIAN of varying vectors (x) of index (i)
+#### Create a function to calculate the MEDIAN of varying vectors (x) of index (i) - all disasters
 median_fun <- function (x,i) {median(x[i])}
 
 # 100000 bootstrap samples:
-#set.seed(12345)
 boot_med_100000 <- boot(econ_change, median_fun, R = 100000)
 
 ggplot() +
   aes(boot_med_100000$t) +
   geom_histogram()
 
-boot_med_100000$t0 # Median of the original sample =$3548578
+boot_med_100000$t0 # Median of the original sample = -$3548578
 boot_med_100000 # to report bias, SE
-#Bias (difference between original sample median and bootstrapped sampling median)=$692,811.4 
-#Std. error (SD of bootstrapped sampling distribution)= $2,442,678
+#Bias (difference between original sample median and bootstrapped sampling median)=$-702,981.6
+#Std. error (SD of bootstrapped sampling distribution)= $2,455,482
 
 
+################
+
+#### Create a function to calculate the MEDIAN of varying vectors (x) of index (i) - only loss years disasters
+
+median_fun <- function (x,i) {median(x[i])}
+
+# 100000 bootstrap samples:
+boot_med_loss_100000 <- boot(econ_change_loss, median_fun, R = 100000)
+
+ggplot() +
+  aes(boot_med_loss_100000$t) +
+  geom_histogram()
+
+boot_med_loss_100000$t0 # Median of the original sample (loss years only) = -$11,557,915
+boot_med_loss_100000 # to report bias, SE
+#Bias (difference between original sample median and bootstrapped sampling median)= $1,184,241
+#Std. error (SD of bootstrapped sampling distribution)= $3,319,164
 ```
 
 
 ###4. Find a bootstrapped confidence interval:
 
 ```{r}
-#95% CI for mean statistic
+#95% CI for mean statistic- all disasters
 boot.ci(boot_mean_100000, conf = 0.95, type = 'basic') #'basic' = compute differences between each bootstrap replication and t0 and use percentiles of their distribution. 
 
 #Intervals : 
 #Level      Basic         
-#95%   (17549009, 55799905 )  
+#95%   (-53036226, -16694819 ) 
 
-# Mean, direct revenue loss in a disaster year is $37,558,907 ($US2019) (n=78), with a boot strapped 95% confidence interval of [$17,549,009, $55,799,905] (n= 100,000 bootstrap samples).
+# Mean, direct revenue loss in a disaster year is -$35,630,166 ($US2019) (n=78), with a boot strapped 95% confidence interval of [(-$53,036,226, -$16,694,819)(n= 100,000 bootstrap samples).
 
 #######################
 
-#95% CI for median statistic, 100,000
+#95% CI for median statistic - all disasters
 boot.ci(boot_med_100000, conf = 0.95, type = 'basic') #'basic' = compute differences between each bootstrap replication and t0 and use percentiles of their distribution. 
 
 #Intervals : 
 #Level      Basic         
-#95%   (-3562980,  7117533 ) 
+#95%   (-$5,560,384,  $4,791,675 ) 
 
-# Median, direct revenue loss in a disaster year is $4,402,333($US2019) (n=78), with a boot strapped 95% confidence interval of [-$3562980,  7117533 )] (n= 100,000 bootstrap samples).
+# Median, direct revenue loss in a disaster year is -$3,548,578 ($US2019) (n=78), with a boot strapped 95% confidence interval of [(-$5,560,384,  $4,791,675 ) ] (n= 100,000 bootstrap samples).
+
+#######################
+
+#95% CI for median statistic - loss years only disasters
+
+boot.ci(boot_med_loss_100000, conf = 0.95, type = 'basic') #'basic' = compute differences between each bootstrap replication and t0 and use percentiles of their distribution. 
+
+#Intervals : 
+#Level      Basic         
+#95%   (-$18,713,497,  -$7,635,949) 
+
+# Median, direct revenue loss in a disaster year is -$11,557,915 ($US2019) (n=62), with a boot strapped 95% confidence interval of [(-$18,713,497,  -$7,635,949)] (n= 100,000 bootstrap samples).
   
 ```
 
 
-###5. Other summary statistics
 
-```{r}
-#Assess the appropriation amount to revenue loss ratio
-appropiation_ratio <- econ_impute %>%
-  mutate(app_ratio = appropration_amt/dollar_diff_real)%>%
-  drop_na(app_ratio)
-
-count(appropiation_ratio, app_ratio >1)
-count(appropiation_ratio, app_ratio <0)
-#23 are greater than 1
-#31 are less than 1
-#16 are negative
-
-mean(appropiation_ratio$app_ratio)
-#52.09476
-median(appropiation_ratio$app_ratio)
-#0.4620938
-
-```
