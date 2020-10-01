@@ -1,5 +1,5 @@
 ---
-title: "Fisheries Disasters Economic Estimate"
+title: "Federal Fisheries Disasters Revenue Loss Economic Estimate"
 author: "Vienna Saccomanno"
 date: "2/5/2020"
 output: html_document
@@ -8,6 +8,11 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+```{r}
+#This .Rmd contains the analysis for the bootstrap analysis to obtain the CI for the median, direct revenue loss in a disaster year
+```
+
 
 
 ```{r}
@@ -44,7 +49,7 @@ qqnorm(econ_raw$dollar_diff_real)
 
 #Test for normality
 shapiro.test(econ_raw$dollar_diff_real)
-#p-value = 2.625e-11 = statisticlly different from a normal distribution
+#p-value = 2.625e-11 = statistically different from a normal distribution
 
 
 # Pull revenue change (real) as a vector (removes the 8 NAs) for all disasters for which there is data
